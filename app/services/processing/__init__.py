@@ -79,9 +79,10 @@ class ProcessDoc:
     async def convert_doc(self, file_path, file_type,image_tag=False):
         content =""
         try:
-            if 'pdf' in file_type:
-                content =  await doc_to_text_unstructured(file_path)
-            elif image_tag:
+            # if 'pdf' in file_type:
+            #     content =  await doc_to_text_unstructured(file_path)
+            # elif image_tag:
+            if image_tag:
                 client, model, _ = doc_convert_llm()
                 md = MarkItDown(llm_client=client, llm_model=model)
                 result = md.convert(file_path)

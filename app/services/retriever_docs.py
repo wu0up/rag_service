@@ -41,10 +41,11 @@ async def search_documents(
     # query 相似語意 + summary(直接查chroma : kdb_id+file_name)
     if p.LLAMAINDEX_FLAG:
         llama = llamaParser(kdb_id=folder_name)
-        summary =await llama.query_summary_engine()
-        similar =await llama.query_vector_engine(query)
+        # summary =await llama.query_summary_engine(query)
+        # 查詢vectordb會出現empty response
+        similar_docs =await llama.query_vector_engine(query)
 
-        return "", "", ""
+        return similar_docs, None, None
     
     else:
         logger.info(f"[search_documents] in search_documents")

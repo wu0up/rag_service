@@ -4,7 +4,7 @@ from typing import List
 from datetime import datetime
 import api.schema as sc
 from config import configs as p
-from services.embedding import process_upload_files, delete_documents
+from services.embedding import process_upload_files, delete_documents, delete_collection
 from services.retriever_docs import search_documents, get_summary_content
 from utils.logger import logger
 from utils import transform_structure
@@ -70,8 +70,11 @@ async def retriever_docs(request: sc.QueryInfoRequest):
     """ 
     try:
         docs, doc_length, doc_tokens  =await search_documents(request.text, request.kdb_id)
-        response = transform_structure(docs)
-        return response
+        if p.LLAMAINDEX_FLAG:
+            return docs
+        else:
+            response = transform_structure(docs)
+            return response
     except Exception as e:
         return []
 
@@ -94,6 +97,26 @@ async def delete_docs(request: sc.DocInfoRequest):
     """
     
     result  = delete_documents(request.id, request.kdb_id)
+    return result
+
+@app.delete("/delete_collection")
+async def delete_docs(request: sc.CollectionInfoRequest):
+    """
+    Retrieve documents based on the provided query and database ID.
+
+    This endpoint accepts a search query and a knowledge database ID, 
+    performs a search to find relevant documents, and returns 
+    the retrieved documents.
+
+    Args:
+        text (str): The search query for retrieving relevant documents.
+        kdb_id (str): The identifier for the knowledge database to search within.
+
+    Returns:
+        list: A list of documents that match the search criteria.
+    """
+    
+    result  = delete_collection(request.kdb_id)
     return result
 
 

@@ -4,9 +4,9 @@
 CONTAINER="akasha-service"
 DOCKER_REPO="iiicondor/$CONTAINER"
 # HARBOR_REPO="harbor.arfa.wise-paas.com/ifp/$CONTAINER"
-VERSION="1.0.0.4"
+VERSION="1.0.0.5"
 # MESSAGE="[Lisa]"
-MESSAGE="[Vivian]"
+MESSAGE="[Vivian] add rerank"
 
 docker build -t $DOCKER_REPO:$VERSION .
 docker push $DOCKER_REPO:$VERSION

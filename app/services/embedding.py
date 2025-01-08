@@ -64,8 +64,8 @@ async def process_upload_files(
             print('content', len(content))
             # summary:split content, file_id+kdb_id
             # 慢
-            file_name = file_name.split('.')
-            result = await llama.summaryIndex(contents, file_name)
+            file_name = os.path.splitext(file_name)[0]
+            # result = await llama.summaryIndex(contents, file_name)
             # vector_index
             result = await llama.vectorIndex(contents)
 
@@ -131,7 +131,7 @@ def delete_documents(name, kdb_id):
     # for item in chromadb_paths:
     #     if 'name' in item:
     #         delete_collection.append(item)
-    
+    name = os.path.splitext(name)[0]
     if p.LLAMAINDEX_FLAG:
         llama=llamaParser(kdb_id=kdb_id)
         llama.delete_document(name)

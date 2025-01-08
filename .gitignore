@@ -154,3 +154,8 @@ study/
 *.jepg
 
 chromadb/
+
+temp/
+/temp
+.pdf
+

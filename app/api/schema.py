@@ -12,3 +12,6 @@ class DocInfoRequest(BaseModel):
 
 class ContentRequest(BaseModel):
     text:str
+
+class CollectionInfoRequest(BaseModel):
+    kdb_id: str
