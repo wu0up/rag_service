@@ -11,10 +11,6 @@ from utils import transform_structure
 
 tags_metadata = []
 
-#TODO: 
-# 把chromadb接外部的
-# 把DELETE完成
-
 app = FastAPI(
         title=p.IAPP_NAME,
         summary="Base on LangChain API Documentation(https://python.langchain.com/docs).",
@@ -29,8 +25,6 @@ app = FastAPI(
         }])
 
 
-# 改用llama_index
-# study\rag_doc\DocSummary.ipynb
 @app.post("/processing_docs")
 async def preprocess_doc(
     files: List[UploadFile] = File(...),
@@ -54,8 +48,6 @@ async def preprocess_doc(
     return result
 
 
-# 改用llama_index
-# study\rag_doc\DocSummary.ipynb
 @app.post("/retriever_docs")
 async def retriever_docs(request: sc.QueryInfoRequest):
     """ 
@@ -120,7 +112,6 @@ async def delete_docs(request: sc.CollectionInfoRequest):
     return result
 
 
-# 拆分成小段, 併行請求
 @app.post("/get_summary")
 async def get_summary(request: sc.ContentRequest):
     """

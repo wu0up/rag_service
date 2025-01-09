@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     """LLM"""
     OPENAI_API_TYPE: Optional[str] = Field("openai",
                                           env="OPENAI_API_TYPE")
-    OPENAI_API_KEY: Optional[str] = Field("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",
+    OPENAI_API_KEY: Optional[str] = Field(None,
                                           env="OPENAI_API_KEY")
     OPENAI_API_DEPLOYMENT: Optional[str] = Field("gpt-4o-mini",
                                                  env="OPENAI_API_DEPLOYMENT")

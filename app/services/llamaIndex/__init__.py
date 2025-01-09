@@ -123,11 +123,11 @@ class llamaParser:
             unique_id = item.node.id_
             
             # 建立新的格式並加入到結果列表
-            result.append([{
+            result.append({
                 "text": text,
                 "file_name": file_name,
                 "id": unique_id
-            }])
+            })
         
         return result
 
@@ -143,7 +143,10 @@ class llamaParser:
                     )
         nodes = retriever.retrieve(query)
         new_node = await self.rerank_nodes(nodes, query)
+        for item in new_node:
+            print('item:', item)
         node_output = self.transform_array(new_node)
+
         return node_output
 
     async def query_summary_engine(self, query):

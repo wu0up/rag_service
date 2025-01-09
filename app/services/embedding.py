@@ -65,7 +65,7 @@ async def process_upload_files(
             # summary:split content, file_id+kdb_id
             # 慢
             file_name = os.path.splitext(file_name)[0]
-            # result = await llama.summaryIndex(contents, file_name)
+            # result = await llama.summaryIndex(contents, file_name)  
             # vector_index
             result = await llama.vectorIndex(contents)
 
