@@ -18,12 +18,21 @@ from utils.logger import logger
 from utils.interface import doc_convert_llm
 from llama_index.core.schema import Document
 from pathlib import Path
+import numpy as np
+
+#TODO: 把CSV轉成TEXT, Rag的效果比較好(跟markdown相比)
 
 
-
-async def doc_to_text_unstructured(pdf_path):
-    elements = partition(filename=pdf_path)
+async def doc_to_text_unstructured(file_path):
+    elements = partition(filename=file_path)
     return '\n'.join([str(el) for el in elements])
+
+async def csv_to_text(file_path):
+    content=""
+    with open(file_path) as f:
+        content+=f.read()+"\n\n"
+    print("content", content[:500])
+    return content
 
 class ProcessDoc:
     def __init__(self,):
@@ -108,8 +117,9 @@ class ProcessDoc:
                 transcription_result = await self.convert_doc(file,mime_type, image_tag=True)
             elif mime_type.startswith("audio/") or mime_type.startswith("video/"):
                 transcription_result = await self.transcribe_whisper(file)
-            # elif "excel" in mime_type:
-            #     transcription_result = await self.convert_csv(file)
+            # elif file.endswith('.csv') or file.endswith('.xlsx') or file.endswith('.xls'):
+            #     transcription_result = await csv_to_text(file)
+            #     print("transcription_result", transcription_result[:10])
             else:
                 transcription_result = await self.convert_doc(file, mime_type)
                 
