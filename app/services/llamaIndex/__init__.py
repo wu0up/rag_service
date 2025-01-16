@@ -13,6 +13,7 @@ from llama_index.core.retrievers import VectorIndexRetriever
 from llama_index.core.query_engine import RetrieverQueryEngine
 from llama_index.core.postprocessor import SimilarityPostprocessor
 from utils import generate_unique_id
+from config import configs as p
 from llama_index.core.ingestion import IngestionPipeline, IngestionCache
 import os
 
@@ -23,7 +24,8 @@ class llamaParser:
     def __init__(self, kdb_id:str):
         self.collection = kdb_id
         self.llm, _, self.embedding_model = doc_convert_llm(llamaIndex=True)
-        self.db = chromadb.PersistentClient(path="./chromadb")
+        # self.db = chromadb.PersistentClient(path="./chromadb")
+        self.db = chromadb.HttpClient(host = p.CHROMA_HOST, port = p.CHROMA_PORT)
         self.chunk_size = 1500
         self.chunk_overlap = 200
         

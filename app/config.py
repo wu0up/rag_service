@@ -36,6 +36,13 @@ class Settings(BaseSettings):
                                           env="WHISPER_TYPE")
     WHISPER_URL:str=Field("http://60.251.156.211:15005", env ="WHISPER_URL")
 
+    """CHROMA"""
+    CHROMA_HOST: Optional[str] = Field("localhost",
+                                     env="CHROMA_HOST")
+    CHROMA_PORT: Optional[int] = Field(8899,
+                                     env="CHROMA_PORT")
+    
+    
     class Config:
         env_file = ".env"
 

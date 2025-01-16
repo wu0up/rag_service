@@ -36,6 +36,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # 設定工作目錄
 WORKDIR /app
 
+# 創建 /data 資料夾並設置權限
+RUN mkdir -p /chromadb && chmod 777 /chromadb
+
+# 聲明 /data 資料夾為持久化掛載點
+VOLUME ["/chromadb"]
+
 # 將專案檔案加入容器
 COPY . /app
 

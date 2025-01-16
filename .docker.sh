@@ -4,7 +4,7 @@
 CONTAINER="akasha-service"
 DOCKER_REPO="iiicondor/$CONTAINER"
 # HARBOR_REPO="harbor.arfa.wise-paas.com/ifp/$CONTAINER"
-VERSION="1.0.0.6"
+VERSION="1.0.0.7"
 # MESSAGE="[Lisa]"
 MESSAGE="[Vivian] add rerank"
 
