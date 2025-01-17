@@ -16,16 +16,20 @@ from utils import generate_unique_id
 from config import configs as p
 from llama_index.core.ingestion import IngestionPipeline, IngestionCache
 import os
-
+from chromadb.config import Settings
 from llama_index.core.postprocessor.llm_rerank import LLMRerank
-
+from utils.logger import logger
 
 class llamaParser:
     def __init__(self, kdb_id:str):
         self.collection = kdb_id
         self.llm, _, self.embedding_model = doc_convert_llm(llamaIndex=True)
         # self.db = chromadb.PersistentClient(path="./chromadb")
-        self.db = chromadb.HttpClient(host = p.CHROMA_HOST, port = p.CHROMA_PORT)
+        self.db = chromadb.HttpClient(host=p.CHROMA_HOST,
+        settings=Settings(
+            chroma_client_auth_provider="chromadb.auth.token_authn.TokenAuthClientProvider",
+            chroma_client_auth_credentials=p.CHROMA_TOKEN,
+        ),)
         self.chunk_size = 1500
         self.chunk_overlap = 200
         
@@ -89,19 +93,15 @@ class llamaParser:
             try:
                 vector_index = VectorStoreIndex(nodes,storage_context=storage_context,  show_progress=True)
             except Exception as e:
-                print('err in vectorindex', e)
-            # print('finish vector_index')
-            
-            # index = VectorStoreIndex.from_documents(
-            #     docs,
-            #     transformations=[splitter],
-            #     storage_context  = storage_context,
-            #     embed_model=self.embedding_model,
-            #     )
-            # print('finish vectordb')
+                error_message = f"err in vectorindex:{e}"
+                logger.error(error_message)
+                raise RuntimeError(error_message)
+
         except Exception as e:
-            print('err in vectorindex', e)
-        return True
+            error_message = f"err in vectorindex:{e}"
+            logger.error(error_message)
+            raise RuntimeError(error_message)
+        # return True
 
     async def rerank_nodes(self, nodes, query):
         ranker = LLMRerank(
@@ -210,8 +210,11 @@ class llamaParser:
                     collection.delete(
                                 ids=delete_doc_ids,
                             )
+
         except Exception as e:
-            print('delete collection error', e)
+            error_message = f"delete collection error:{e}"
+            logger.error(error_message)
+            raise RuntimeError(error_message)
         return True
         
 

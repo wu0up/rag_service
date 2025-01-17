@@ -31,16 +31,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxext6 \
     libgl1 \   
     python3-pip \
+    poppler-utils \
+    tesseract-ocr \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # 設定工作目錄
 WORKDIR /app
 
-# 創建 /data 資料夾並設置權限
-RUN mkdir -p /chromadb && chmod 777 /chromadb
-
-# 聲明 /data 資料夾為持久化掛載點
-VOLUME ["/chromadb"]
+# Install NLTK and download necessary datasets
+RUN python -m pip install nltk && \
+    python -m nltk.downloader -d /usr/local/share/nltk_data punkt averaged_perceptron_tagger averaged_perceptron_tagger_eng stopwords &&\
+    python -m nltk.downloader -d /usr/local/share/nltk_data punkt_tab
 
 # 將專案檔案加入容器
 COPY . /app

@@ -100,35 +100,38 @@ class ProcessDoc:
                 md = MarkItDown()
                 result = md.convert(file_path)
                 content = result.text_content
+            return content
         except Exception as e:
-            logger.error(f'convert_docs error:{e}')
-            
-        return content
+            error_message = f'convert_docs error:{e}'
+            logger.error(error_message)
+            raise RuntimeError(error_message)
+        
  
 
-    # 目前不支持csv
     async def wrapper_docs(self, file_path_lst):
-        docs =[]
-        for file in file_path_lst:
-            mime_type, _ = mimetypes.guess_type(file)
-            file_name = Path(file).stem
-            print("mime_type", mime_type)
-            if mime_type.startswith("image/"):
-                transcription_result = await self.convert_doc(file,mime_type, image_tag=True)
-            elif mime_type.startswith("audio/") or mime_type.startswith("video/"):
-                transcription_result = await self.transcribe_whisper(file)
-            # elif file.endswith('.csv') or file.endswith('.xlsx') or file.endswith('.xls'):
-            #     transcription_result = await csv_to_text(file)
-            #     print("transcription_result", transcription_result[:10])
-            else:
-                transcription_result = await self.convert_doc(file, mime_type)
-                
-            doc = Document(text=transcription_result,
-                           metadata={
-                            "file_name": file_name,
-                        },)
-            doc.doc_id = file_name
-            docs.append(doc)
-        
+        try:
+            docs =[]
+            for file in file_path_lst:
+
+                mime_type, _ = mimetypes.guess_type(file)
+                file_name = Path(file).stem
+                print("mime_type", mime_type)
+                if mime_type.startswith("image/"):
+                    transcription_result = await self.convert_doc(file,mime_type, image_tag=True)
+                elif mime_type.startswith("audio/") or mime_type.startswith("video/"):
+                    transcription_result = await self.transcribe_whisper(file)
+                else:
+                    transcription_result = await self.convert_doc(file, mime_type)
+                    
+                doc = Document(text=transcription_result,
+                            metadata={
+                                "file_name": file_name,
+                            },)
+                doc.doc_id = file_name
+                docs.append(doc)
+        except Exception as e:
+            error_message = f"Error processing file {file}: {e}"
+            logger.error(error_message)
+            raise RuntimeError(error_message)
         return docs
 

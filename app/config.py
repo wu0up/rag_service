@@ -37,11 +37,12 @@ class Settings(BaseSettings):
     WHISPER_URL:str=Field("http://60.251.156.211:15005", env ="WHISPER_URL")
 
     """CHROMA"""
-    CHROMA_HOST: Optional[str] = Field("localhost",
+    CHROMA_HOST: Optional[str] = Field("chroma-chromadb",
                                      env="CHROMA_HOST")
-    CHROMA_PORT: Optional[int] = Field(8899,
+    CHROMA_PORT: Optional[int] = Field(8000,
                                      env="CHROMA_PORT")
-    
+    CHROMA_TOKEN: Optional[str] = Field(None,
+                                     env="CHROMA_TOKEN")
     
     class Config:
         env_file = ".env"
@@ -67,7 +68,7 @@ def get_configs():
     config_vars = vars(configs)
     for key, value in config_vars.items():
         if key.isupper() and key not in (
-                "ENSAAS_SERVICES", "OPENAI_API_KEY") and value is not None:
+                "ENSAAS_SERVICES", "OPENAI_API_KEY", "CHROMA_TOKEN") and value is not None:
             if 'KEY' not in key:
                 logger.debug(f"{key} ok ... : {value}")
 
