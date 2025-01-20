@@ -1,81 +1,61 @@
-# Akasha Service
 
-Akasha Service is a document processing and retrieval service built using FastAPI. It supports uploading documents, processing them into vector databases, and retrieving relevant documents based on search queries.
+# RAG（檢索增強生成）服務
 
-## Installation
+本專案實現了一個基於「相似度計算 + 重排序」技術的檢索增強生成（RAG）服務，旨在幫助使用者快速檢索並獲取與問題或需求最相關的內容。
+此外，使用MarkItdown，可以支援多種檔案格式，包含ppt, docx, csv, png, pdf等
 
-1. Clone the repository:
-    ```sh
-    git clone https://github.com/your-repo/akasha_service.git
-    cd akasha_service
-    ```
+---
 
-2. Install the required dependencies:
-    ```sh
-    pip install -r requirements.txt
-    ```
+## 功能介紹
 
-3. Configure the application by editing the `config.py` file with your settings.
+- **高效檢索**：快速找到與查詢內容最相關的資料。
+- **語意理解**：透過LLM進行語意分析，理解查詢背後的含義。
+- **精準排序**：結合重排序技術，提升結果的準確性。
+- **多場景應用**：適用於客服系統、知識庫檢索、文件查詢等多種場景。
 
-## Usage
+---
 
-### Running the Service
+## 系統架構
 
-Start the FastAPI server:
-```sh
-uvicorn app.main:app --host 0.0.0.0 --port 8006
-```
+以下是本服務的架構流程圖：
 
-### API Endpoints
+![alt text](mermaid-flow-1x.png)
 
-#### Process Documents
+### 流程簡述
+1. **使用者查詢**：輸入查詢問題或需求作為輸入。
+2. **語意向量化**：將查詢內容轉換為語意向量（使用text-embedding-3-small）。
+3. **相似度計算**：與資料庫中的向量進行相似度比較，篩選相關內容。
+4. **初步篩選**：根據相似度挑選出一批潛在相關的候選內容。
+5. **重排序**：透過更精細的模型（GPT-4o-mini）重排序候選內容，優化結果。
+6. **最終結果輸出**：返回最佳內容給使用者。
 
-Upload and process documents:
-```sh
-POST /processing_docs
-```
-- **Parameters**: 
-  - `files`: List of files to upload.
-  - `kdb_id`: Knowledge database ID (default: "default").
+---
 
-#### Retrieve Documents
+## 技術特色
 
-Retrieve documents based on a search query:
-```sh
-POST /retriever_docs
-```
-- **Parameters**:
-  - `text`: Search query.
-  - `kdb_id`: Knowledge database ID.
+- **加大chunk_size**：設定chunk_size為1000，增加多一點的資訊。
+- **使用rerank node**：解決先前會輸出跟query無關的資料
+- **PDF的loader不使用MarkItDown**：比較unstructured和markItDown進行pdf的讀取，unstructured的結果比較能比對到相似的資料。
+- **CSV的loader不使用MarkItDown**：經測試，將CSV轉換成text，llm比較能比對到相似的資料。
 
-#### Delete Documents
+---
 
-Delete specific documents:
-```sh
-DELETE /delete_docs
-```
-- **Parameters**:
-  - `id`: Document ID.
-  - `kdb_id`: Knowledge database ID.
+## 安裝與部署
 
-#### Delete Collection
+1. **安裝依賴**  
+   確保系統已安裝 `Python 3.11`，並執行以下命令安裝依賴：
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-Delete an entire collection:
-```sh
-DELETE /delete_collection
-```
-- **Parameters**:
-  - `kdb_id`: Knowledge database ID.
+2. **啟動服務**  
+   運行以下命令啟動本服務：
+   ```bash
+   python app/main.py
+   ```
 
-#### Get Summary
+3. **訪問測試**  
+   透過 `http://127.0.0.1:8006/docs`，可以訪問本服務的swagger，進行查詢；
 
-Get a summary of text content:
-```sh
-POST /get_summary
-```
-- **Parameters**:
-  - `text`: Text content to summarize.
+---
 
-## License
-
-This project is licensed under the MIT License.
