@@ -20,7 +20,7 @@
 
 以下是本服務的架構流程圖：
 
-<img src="images/workflow.png" alt="table" width="50%">
+<img src="images/workflow.png" alt="table" width="70%">
 
 ### 流程簡述
 1. **使用者查詢**：輸入查詢問題或需求作為輸入。
