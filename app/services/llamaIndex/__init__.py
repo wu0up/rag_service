@@ -25,7 +25,8 @@ class llamaParser:
         self.collection = kdb_id
         self.llm, _, self.embedding_model = doc_convert_llm(llamaIndex=True)
         # self.db = chromadb.PersistentClient(path="./chromadb")
-        self.db = chromadb.HttpClient(host=p.CHROMA_HOST,
+        # self.db = chromadb.HttpClient(host=p.CHROMA_HOST,
+        self.db = chromadb.HttpClient(host=p.CHROMA_HOST,port=p.CHROMA_PORT,
         settings=Settings(
             chroma_client_auth_provider="chromadb.auth.token_authn.TokenAuthClientProvider",
             chroma_client_auth_credentials=p.CHROMA_TOKEN,
@@ -173,17 +174,18 @@ class llamaParser:
     # delete summary, vectordb_document-->how to delete document
     def delete_document(self, name):
         try:
+            print('delete_document_name', name)
             collection_lst = self.db.list_collections()
             print('collection_lst', collection_lst)
-            file_id = generate_unique_id(name)
+            # file_id = generate_unique_id(name)
             # delete summary collection
-            collection_name =  f"summary_{self.collection}_{file_id}"
-            if collection_name in collection_lst:
-                print('collection_name', collection_name)
-                # lst = self.db.list_collections()
-                collection = self.db.get_collection(name =collection_name)
-                if collection:
-                    self.db.delete_collection(collection_name)
+            # collection_name =  f"summary_{self.collection}_{file_id}"
+            # if collection_name in collection_lst:
+            #     print('collection_name', collection_name)
+            #     # lst = self.db.list_collections()
+            #     collection = self.db.get_collection(name =collection_name)
+            #     if collection:
+            #         self.db.delete_collection(collection_name)
             # delete vectordb collection
             if self.collection in collection_lst:
                 collection = self.db.get_collection(name =self.collection)
@@ -193,14 +195,14 @@ class llamaParser:
                 delete_doc_ids = []
                 for d in docs_metadata:
                     f_name = os.path.splitext(d.get('file_name', ''))[0]
-                    print('file_name', f_name)
                     if f_name == name:
+                        print('file_name', f_name)
                         node_info = json.loads(d.get('_node_content'))
-                        print('node_info', node_info)
+                        # print('node_info', node_info)
                         delete_doc_ids.append(node_info.get('id_'))
-                        print('delete_doc_ids', delete_doc_ids)
+                print('delete_doc_ids', delete_doc_ids)
                 # 確認是否可以比對document_id, 確認是否能不要比對filetype
-                if collection:
+                if collection and len(delete_doc_ids)>0:
                     collection.delete(
                                 ids=delete_doc_ids,
                             )
@@ -216,14 +218,11 @@ class llamaParser:
         try:
             # delete summary 
             collection_lst = self.db.list_collections()
-            collection_lst = [col for col in collection_lst if f"summary_{self.collection}_" in col.name]
-            for item in collection_lst:
-                collection = self.db.get_collection(name =item.name)
-                if collection:
-                    self.db.delete_collection(item.name)
-            # delete vectordb
+            print('delete collection_lst', collection_lst)
             collection = self.db.get_collection(name =self.collection)
+            
             if collection:
+                print(f'in delete collection')
                 self.db.delete_collection(self.collection)
 
             collection_lst = self.db.list_collections()

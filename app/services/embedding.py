@@ -15,6 +15,7 @@ import os
 import shutil
 from services.processing import ProcessDoc
 from services.llamaIndex import llamaParser
+from urllib.parse import unquote
 
 TempFolder = TempFileManager()
 
@@ -47,7 +48,8 @@ async def process_upload_files(
     try:
         # 使用 TempFileManager 創建臨時文件
         for file in files:
-            file_name = file.filename
+            file_name = unquote(file.filename)
+            # file_name = file.filename
             content = await file.read()
             temp_file_path = TempFolder.create_temp_files(file_name, content, kdb_id)
             temp_file_paths.append(temp_file_path)

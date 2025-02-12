@@ -80,6 +80,7 @@ class ProcessDoc:
                 file=audio_file
                 )
                 result = Transcription.text
+                print('result in openai', result)
                 return result
         except Exception as e:
             print('error',e)
