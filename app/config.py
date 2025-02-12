@@ -34,7 +34,7 @@ class Settings(BaseSettings):
     """AST"""
     WHISPER_TYPE: Optional[str] = Field("local",
                                           env="WHISPER_TYPE")
-    WHISPER_URL:str=Field("http://60.251.156.211:15005", env ="WHISPER_URL")
+    WHISPER_URL:str=Field("", env ="WHISPER_URL")
 
     """CHROMA"""
     CHROMA_HOST: Optional[str] = Field("chroma-chromadb",
