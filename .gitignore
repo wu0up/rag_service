@@ -148,10 +148,10 @@ dmypy.json
 /study
 study/
 
-#image
-*.png
-*.jpg
-*.jepg
+# #image
+# *.png
+# *.jpg
+# *.jepg
 
 chromadb/
 
